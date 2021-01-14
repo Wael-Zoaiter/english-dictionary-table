@@ -1,13 +1,8 @@
 import useAxios from "axios-hooks"
 
-export const useDictionary = (word = '') => {
-  const [response, refetch] = useAxios({
-    url: '/define',
+export const useDictionary = (word = '', config = {}) => {
+  return useAxios({
+    url: `${word}`,
     method: 'GET',
-    params: {
-      term: word,
-    },
-  });
-
-  return [response, refetch];
+  }, config);
 };

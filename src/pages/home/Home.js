@@ -1,35 +1,36 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Box, Flex } from 'reflexbox';
-
-import { useDictionary } from '../../api';
-import { Alert, Input, Table } from '../../components';
-import { dictionaryColumns } from './home.config';
+import { useDebounce } from 'use-debounce';
+import { Input } from '../../components';
+import { WordDetails } from '../../components/word-details/WordDetails';
 
 
 function Home() {
-  const [{ data, loading, error }, refetch] = useDictionary('hello');
+  const [_text, setText] = useState();
+  const [text] = useDebounce(_text, 1000);
+  const words = useMemo(() => text?.split(',') || [], [text]);
 
   return (
     <div className="Home">
       <Flex flexDirection="column" m="3rem">
-        {error?.message &&
-          <Box width={1} mx="auto" mb={3}>
-            <Alert>{error?.message}</Alert>
-          </Box>}
         <Input
-          onChange={({ target: { value = '' } = {} }) => refetch({ params: { term: value }})}
-          placeholder="Find definition"
+          onChange={({ target: { value = '' } = {} }) => setText(value)}
+          placeholder="Find definition for one word, or multiple comma ',' separte words"
+          tag="textarea"
+          rows="5"
         />
         <Box width={1} mx="auto">
-          <Table
-            data={data?.list || []}
-            loading={loading}
-            columns={dictionaryColumns}
-          />
+          <Flex flexWrap="wrap" justifyContent="space-evenly">
+            {words.map(word => (
+              <Box width={1 / 4} m="1rem">
+                <WordDetails word={word} />
+              </Box>
+            ))}
+          </Flex>
         </Box>
       </Flex>
     </div>
-  )
+  );
 }
 
 export default Home;

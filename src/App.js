@@ -3,15 +3,13 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
 import { Home } from './pages';
-import { theme } from './styles';
-
-import './App.css';
-
+import { GlobalStyle, theme } from './styles';
 
 function App() {
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
+        <GlobalStyle />
         <Router>
           <Switch>
             <Route path="/">

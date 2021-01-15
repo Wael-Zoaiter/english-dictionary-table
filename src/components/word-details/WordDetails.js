@@ -1,10 +1,14 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 
 import { useDictionary } from '../../api';
-import { WordDetailsWrapper, SoundIconStyled } from './word-details.style';
+import { SoundIcon } from '../../styles';
+import { Loader } from '../loader';
+import { Scrollbar } from '../scrollbar';
+
+import { Title, Subtitle, WordDetailsWrapper, Section, SectionTitle, SectionBody, SectionBodyText, Div } from './word-details.style';
 
 
-export const WordDetails = ({ word: _word }) => {
+export const WordDetails = memo(({ word: _word, getWord = () => {} }) => {
   const [{ data, loading, error }, refetch] = useDictionary(_word);
 
   const word = useMemo(() => data?.[0] ?? {}, [data]);
@@ -15,49 +19,59 @@ export const WordDetails = ({ word: _word }) => {
     });
   }, [_word, refetch]);
 
+  useEffect(() => {
+    getWord(word);
+  }, [word, getWord]);
+
   return loading ? (
-    <span>Loading...</span>
+    <WordDetailsWrapper>
+      <Loader />
+    </WordDetailsWrapper>
   ) : error ? (
     <WordDetailsWrapper>
-      <h2>Word: {_word}</h2>
-      <h4>{error.response.data.title}</h4>
-      <p>{error.response.data.message}</p>
-      <small>{error.response.data.resolution}</small>
+      <Div>
+        <Title>Word: {_word}</Title>
+        <h4>{error.response.data.title}</h4>
+        <p>{error.response.data.message}</p>
+        <small>{error.response.data.resolution}</small>
+      </Div>
     </WordDetailsWrapper>
   ) : (
     <WordDetailsWrapper>
-      <h2>Word: {word['word']}</h2>
-      <p>{word?.['phonetics']?.[0]['text']}</p>
-      <p>
-        <SoundIconStyled
-          onClick={() => new Audio(word['phonetics'][0]['audio']).play()}
-        />
-      </p>
-      {word['meanings']?.map(meaning => (
-        <div key={meaning['partOfSpeech']}>
-          <h3>Type: {meaning['partOfSpeech']}</h3>
-          <div>
-            {meaning['definitions']?.map(definition => (
-              <div>
-                <p>
-                  <strong>Definition: </strong>
-                  {definition['definition']}
-                </p>
-                {definition['example'] &&
-                  <p>
-                    <strong>Example: </strong>
-                    {definition['example']}
-                  </p>}
-                {definition['synonyms'] &&
-                  <p>
-                    <strong>Synonyms: </strong>
-                    {definition['synonyms'].join(' - ')}
-                  </p>}
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
+      <Scrollbar style={{ padding: '1rem' }}>
+        <Title>{word['word']}</Title>
+        <Subtitle>
+          <span>{word?.['phonetics']?.[0]?.['text']}</span>
+          <SoundIcon
+            onClick={() => new Audio(word?.['phonetics']?.[0]?.['audio']).play()}
+          />
+        </Subtitle>
+        {word['meanings']?.map(meaning => (
+          <Section key={meaning['partOfSpeech']}>
+            <SectionTitle>Type: {meaning['partOfSpeech']}</SectionTitle>
+            <SectionBody>
+              {meaning['definitions']?.map(definition => (
+                <div key={definition['definition']}>
+                  <SectionBodyText>
+                    <strong>Definition: </strong>
+                    {definition['definition']}
+                  </SectionBodyText>
+                  {definition['example'] &&
+                    <SectionBodyText>
+                      <strong>Example: </strong>
+                      {definition['example']}
+                    </SectionBodyText>}
+                  {definition['synonyms'] &&
+                    <SectionBodyText>
+                      <strong>Synonyms: </strong>
+                      {definition['synonyms'].join(' - ')}
+                    </SectionBodyText>}
+                </div>
+              ))}
+            </SectionBody>
+          </Section>
+        ))}
+      </Scrollbar>
     </WordDetailsWrapper>
   );
-};
+}, (prevProp, nextProp) => prevProp.word === nextProp.word);

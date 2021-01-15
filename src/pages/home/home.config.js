@@ -1,19 +1,3 @@
-import React from 'react';
-import styled from 'styled-components';
-
-import { SoundIcon } from "../../styles";
-
-const SoundIconStyled = styled(SoundIcon)`
-  cursor: pointer;
-  &:not(:last-of-type) {
-    margin-right: 5px;
-  }
-  &:hover {
-    color: ${({ theme }) => theme.global.colors.primary};
-  }
-`;
-
-
 export const dictionaryColumns = [
   {
     Header: 'Dictionary',
@@ -33,12 +17,13 @@ export const dictionaryColumns = [
       {
         Header: 'Sound',
         accessor: 'sound_urls',
-        Cell: ({ value }) => <span>{value?.map(voice => (
-          <SoundIconStyled
-            onClick={() => new Audio(voice).play()}
-          />
-        ))}</span>
       },
     ],
   },
 ];
+
+export const getAudioFromDetails = (details = []) => {
+  const audios = new Set();
+  details.map(detail => audios.add(detail?.['phonetics']?.[0]?.['audio']));
+  return [...audios].filter(audio => Boolean(audio));
+}

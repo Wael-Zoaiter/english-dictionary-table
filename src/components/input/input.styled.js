@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { rgba } from 'polished';
+import { lighten, rgba } from 'polished';
 
 
 export const FormStyled = styled.form`
@@ -42,9 +42,12 @@ export const FormGroup = styled.div`
 `;
 
 export const FormInputStyled = styled.input`
+  background-color: ${({ theme }) => lighten (.1) (theme.global.colors.dark)};
   border: 1px solid ${({ theme }) => rgba (theme.global.colors.dark, 0.25)};
   border-radius: .2rem;
   display: block;
+  color: ${props => props.theme.global.colors.light};
+  resize: none;
 
   ${({ invalid, theme }) => invalid && `
     border-color: ${theme.global.colors.danger};
@@ -67,7 +70,7 @@ export const FormInputStyled = styled.input`
 `;
 
 export const LabelStyled = styled.label`
-  color: ${props => props.theme.global.colors.dark};
+  color: ${props => props.theme.global.colors.light};
   font-size: 14px;
   font-weight: 500;
   text-transform: capitalize;

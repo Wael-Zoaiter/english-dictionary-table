@@ -9,6 +9,7 @@ import { AudioPlayer } from '../../components/audio-player';
 import { WordDetails } from '../../components/word-details/WordDetails';
 
 import { getAudioFromDetails } from './home.config';
+import { SocialShare } from '../../components/social-share';
 
 
 function Home() {
@@ -55,6 +56,9 @@ function Home() {
             />
           </Box>
         ))}
+      </Flex>
+      <Flex flexWrap="wrap" mx="-0.5rem" pb="2rem" px={['1rem', '2rem']}>
+        <SocialShare />
       </Flex>
     </div>
   );

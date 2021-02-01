@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 
 export const WordDetailsWrapper = styled.div`
-  border: 1px solid black;
   border-radius: 8px;
   height: 300px;
   overflow: hidden;
@@ -10,6 +9,12 @@ export const WordDetailsWrapper = styled.div`
   &:not(:last-of-type) {
     margin-bottom: 15px;
   }
+
+  animation: gradient 15s linear infinite;
+  animation-direction: alternate;
+  border: 2px solid #212125;
+  background: linear-gradient(to right,#d367c1 10%,#dedf40 25%,#62cb5c 50%,#00bbcb 75%,#ab79d6 90%);
+  background-size: 1000% 100%;
 `;
 
 export const Title = styled.h2`
